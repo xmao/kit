@@ -1,0 +1,56 @@
+#!/usr/bin/python
+# 
+# Hello
+
+def nobbed(iterable, keys):
+    curr_keys, nobs = [], []
+    for fields in iterable:
+        temp_keys = [ fields[i] for i in keys ]
+        if  temp_keys  == curr_keys:
+            for i in range(len(fields)):
+                if i not in keys:
+                    nobs[i].append(fields[i]) 
+        else:
+            if curr_keys:
+                yield nobs
+            curr_keys, nobs = temp_keys, []
+            for i in range(len(fields)):
+                if i in keys:
+                    nobs.append(fields[i])
+                else:
+                    nobs.append([fields[i]])
+    if nobs: 
+        yield nobs
+
+if __name__ == '__main__':
+    import sys, getopt
+    try:
+        opts, args = getopt.getopt(sys.argv[1:], 'k:m:')
+    except:
+        raise
+    else:
+        dopts = dict(opts)
+    
+    if '-k' in dopts:
+        keys = [ int(i)-1 for i in dopts['-k'].split(',') ]
+    else:
+        keys = [0]
+
+    if '-m' in dopts:
+        if dopts['-m'] == 'sum':
+            meth = lambda seq: '%d' % sum([ float(i) for i in seq ])
+        elif dopts['-m'] == 'ave':
+            meth = lambda seq: '%g' % (sum([ float(i) for i in seq ])/len(seq))
+        elif dopts['-m'].startswith('idx'):
+            if ':' in dopts['-m']:
+                idx = int(dopts['-m'].split(':')[1]) - 1
+            else:
+                idx = 0
+            meth = lambda seq: seq[idx]
+        else:
+            meth = ','.join
+    else:
+        meth = ','.join
+
+    for fields in nobbed([ l.rstrip().split('\t') for l in sys.stdin ], keys):
+        print '\t'.join([ type(i) in (list,set,tuple) and meth(i) or i for i in fields ])

@@ -1,0 +1,7 @@
+#!/usr/bin/env sh
+
+header=$(mktemp)
+body=$(mktemp)
+sed -e "1w$header" -e "1d" | sort $* > $body
+
+cat $header $body; rm $header $body

@@ -1,0 +1,20 @@
+KITHOME=$HOME/kit/scripts
+
+_kit()
+{
+	local cur updir=$KITHOME
+	cur="${COMP_WORDS[COMP_CWORD]}"
+	for ((i=1; i<COMP_CWORD; i++)); do
+		updir=${updir}/${COMP_WORDS[i]}
+	done
+	
+	if [ -d ${updir}/${cur} ]; then
+		COMPREPLY=( $(compgen -W "$(ls $updir/$cur)" -- ${cur}) )
+	elif [ -d $updir ]; then
+		COMPREPLY=( $(compgen -W "$(ls $updir)" -- ${cur}) )
+	else
+		COMPREPLY=()
+	fi
+	return 0
+}
+complete -F _kit kit

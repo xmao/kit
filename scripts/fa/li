@@ -1,0 +1,19 @@
+#!/usr/bin/python
+
+import sys
+from Bio import SeqIO
+
+def linearize(reverse):
+    def mkrecs(handle):
+        for l in handle:
+            id, seq = l.strip().split('///')
+            yield SeqIO.SeqRecord(SeqIO.Seq(seq), id, '', '')
+    if reverse:
+        SeqIO.write(mkrecs(sys.stdin), sys.stdout, 'fasta')
+    else:
+        for r in SeqIO.parse(sys.stdin, 'fasta'):
+            print '%s///%s' % (r.id, r.seq.tostring())
+
+if __name__ == '__main__':
+    import sys
+    linearize('-r' in sys.argv)

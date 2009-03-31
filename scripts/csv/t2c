@@ -1,0 +1,9 @@
+#!/usr/bin/python
+
+import csv, sys
+
+reader = csv.reader(sys.stdin, dialect='excel-tab')
+writer = csv.writer(sys.stdout, dialect='excel')
+
+for fields in reader:
+   writer.writerow(fields) 

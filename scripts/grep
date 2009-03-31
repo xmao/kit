@@ -1,0 +1,6 @@
+#!/usr/bin/env sh
+
+temp=$(mktemp)
+cat > $temp
+grep -f $temp $*
+rm $temp

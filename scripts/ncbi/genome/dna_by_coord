@@ -1,0 +1,28 @@
+#!/usr/bin/env python
+#
+# coordinate files contains 4 columns, 
+#   gene, chromosome, start, end, direction
+
+if __name__ == '__main__':
+    import sys
+    from Bio import SeqIO
+    
+    gs = {}
+    for l in open(sys.argv[1]):
+        g,c,s,e,d = l.strip().split('\t')
+        c = c.split('.')[0]
+        if c in gs:
+            gs[c].append((g,s,e,d))
+        else:
+            gs[c] = [(g,s,e,d)]
+    
+    for s in SeqIO.parse(sys.stdin, 'fasta'):
+        id = s.id.split('|')[3].split('.')[0]
+        for i in gs.get(id, []):
+            # RefSeq position is 0-based
+            start, end = int(i[1])+1, int(i[2])+1
+            if i[3] == '+':
+                seq = s.seq[(start-1):end]
+            else:
+                seq = s.seq[(start-1):end].reverse_complement()
+            print '>%s range:%d-%d direction:%s\n%s' % (i[0], start, end, i[3], seq)

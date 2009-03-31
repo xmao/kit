@@ -1,0 +1,29 @@
+#!/usr/bin/python
+
+from Bio import SeqIO
+
+def filter(table, reverse):
+    def mkrecs(handle, reverse):
+        for r in SeqIO.parse(handle, 'fasta'):
+            if reverse:
+                if r.id not in table:
+                    yield r
+            else:
+                if r.id in table:
+                    table[r.id] += 1
+                    if table[r.id] == 1:
+                        yield r
+    SeqIO.write(mkrecs(sys.stdin, reverse), sys.stdout, 'fasta')
+
+if __name__ == '__main__':
+    import sys, getopt
+
+    try:
+        opts, args = getopt.getopt(sys.argv[1:], 'f:r')
+    except:
+        raise
+    else:
+        dopts = dict(opts)
+
+    table = dict([ (l.strip(), 0) for l in file(dopts['-f']) ])
+    filter(table, reverse=('-r' in dopts))

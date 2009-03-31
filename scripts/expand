@@ -1,0 +1,12 @@
+#!/usr/bin/python
+
+if __name__ == '__main__':
+    import sys
+
+    for l in sys.stdin:
+        flds = l.strip().split('\t')
+        if len(flds) <= 1:
+            continue
+        for i in flds[0].split(','):
+            for j in flds[1].split(','):
+                print '%s\t%s' % (i, j)

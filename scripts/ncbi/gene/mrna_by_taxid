@@ -1,0 +1,9 @@
+#!/usr/bin/env sh
+
+gene_info=$(mktemp)
+gene2refseq=$(mktemp)
+
+zgrep -w "^${1}" /home/lymxz/data/ncbi/gene/gene_info.gz | sort -k2,2 > $gene_info
+zgrep -w "^${1}" /home/lymxz/data/ncbi/gene/gene2refseq.gz | sort -k2,2 > $gene2refseq
+
+join -t "	" -12 -22 $gene_info $gene2refseq
