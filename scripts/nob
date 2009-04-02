@@ -2,6 +2,8 @@
 # 
 # Hello
 
+from sets import Set as set
+
 def nobbed(iterable, keys):
     curr_keys, nobs = [], []
     for fields in iterable:
