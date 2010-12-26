@@ -1,0 +1,9 @@
+#!/usr/bin/env sh
+# faa_by_synonym PTT_FILE FAA_FILE
+
+MAP=$(mktemp)
+cat ${1} | sed -e '1,3d' | cut -f4,6 > $MAP
+
+cat ${2} | sed -e '/^>/s/gi|//' -e '/^>/s/|.*//' | kit fa tr -f $MAP
+
+rm $MAP

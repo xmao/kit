@@ -1,8 +1,4 @@
-#!/usr/bin/python
-# 
-# Hello
-
-from sets import Set as set
+#!/usr/bin/env python
 
 def nobbed(iterable, keys):
     curr_keys, nobs = [], []
@@ -26,6 +22,14 @@ def nobbed(iterable, keys):
 
 if __name__ == '__main__':
     import sys, getopt
+    
+    if sys.version_info[:2] <= (2, 2):
+        sys.exit("Can't work under Python <= (2.2), and please install higher version")
+    elif sys.version_info[:2] == (2, 3):
+        from sets import Set as set
+    else:
+        pass
+
     try:
         opts, args = getopt.getopt(sys.argv[1:], 'k:m:')
     except:

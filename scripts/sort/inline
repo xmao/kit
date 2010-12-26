@@ -1,0 +1,16 @@
+#!/usr/bin/env python
+
+if __name__ == '__main__':
+    import sys, getopt, csv
+    try:
+        opts, args = getopt.getopt(sys.argv[1:], 'o:')
+    except:
+        raise
+    else:
+        dopts = dict(opts)
+
+    offset = int(dopts.get('-o', '1'))
+    input = (len(args) == 0 or args[0] == '-') and sys.stdin or open(args[0])
+
+    for i in csv.reader(input, dialect='excel-tab'):
+        print '%s\t%s' % ('\t'.join(i[:offset]), '\t'.join(sorted(i[offset:])))
