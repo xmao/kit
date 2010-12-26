@@ -3,7 +3,11 @@
 import os,sys
 import shutil,tempfile
 
-KITROOT = '/home/lymxz/kit/scripts'
+if 'KITROOT' in os.environ:
+    KITROOT = os.environ['KITROOT']
+else:
+    KITROOT = os.path.join(
+        os.path.dirname(__file__), 'scripts')
 
 KIT_TYPES = {
     'awk'    :  '#!/usr/bin/env awk',
@@ -61,7 +65,7 @@ if __name__ == '__main__':
 
     KIT_METHODS = dict(
         [(k[4:],v) for k,v in vars().items() if k.startswith('kit_')])
-
+    
     if '-h' in args:
         for l in file(get_program(names)):
             l = l.strip()
