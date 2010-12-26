@@ -1,0 +1,5 @@
+#!/usr/bin/env sh
+# Import the two-column input into a BerkeleyDB file
+
+tr '\t' '\n' | sed -e 's/\\/\\\\/g' \
+	| db46_load -T -n -t ${2:-hash} ${1:-data.db}

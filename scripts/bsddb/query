@@ -1,0 +1,34 @@
+#!/usr/bin/env python
+
+__doc__ = "Usage: query -d berkeley database -t hash|btree (-f keys)|key"
+
+if __name__ == '__main__':
+    import bsddb, os, sys, getopt
+
+    try:
+        opts, args = getopt.getopt(sys.argv[1:], 'd:t:f:')
+    except:
+        raise
+    else:
+        dopts = dict(opts)
+
+    if not os.path.exists(dopts.get('-d', 'data.db')):
+        print __doc__
+        sys.exit("Error: the %s database does not exist :-(" % dopts.get('-d', ''))
+
+    if dopts.get("-t", "hash") == "hash":
+        db = bsddb.hashopen(dopts.get('-d', 'data.db'))
+    else:
+        db = bsddb.btopen(dopts.get('-d', 'data.db'))
+
+    if '-f' in dopts:
+        for i in open(dopts['-f']):
+            if i in db:
+                print "%s: %s" % (i, db[i])
+            else:
+                print "%s does not exist" % (i, )        
+        else:
+        if args[0] in db:
+            print "%s: %s" % (args[0], db[args[0]])
+        else:
+            print "%s does not exist" % (args[0], )        

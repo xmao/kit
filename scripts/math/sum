@@ -1,0 +1,2 @@
+#!/usr/bin/env sh
+awk 'BEGIN { i=0; } {i = i + $1} END {print i;}'
