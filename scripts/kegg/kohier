@@ -1,0 +1,14 @@
+#!/usr/bin/env ruby
+# Usage: kohier KOFILE
+# Print out the hierarchy of KO entity
+
+require 'bio/io/flatfile'
+require 'bio/db/kegg/orthology'
+
+kos = Bio::FlatFile.open(Bio::KEGG::ORTHOLOGY, "/Users/xmao/data/kegg/57/ko")
+
+kos.each do |entry|
+  entry.keggclasses.each do |path|
+    puts "#{ entry.entry_id }\t#{ path.gsub('; ', '	') }"
+  end
+end
