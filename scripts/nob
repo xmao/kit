@@ -47,6 +47,8 @@ if __name__ == '__main__':
             meth = lambda seq: '%d' % sum([ float(i) for i in seq ])
         elif dopts['-m'] == 'ave':
             meth = lambda seq: '%g' % (sum([ float(i) for i in seq ])/len(seq))
+        elif dopts['-m'] == 'cnt':
+            meth = lambda seq: '%i' % len(seq)
         elif dopts['-m'].startswith('idx'):
             if ':' in dopts['-m']:
                 idx = int(dopts['-m'].split(':')[1]) - 1
