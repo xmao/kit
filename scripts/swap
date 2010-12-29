@@ -1,0 +1,2 @@
+#!/usr/bin/env sh
+awk -F "${1:-\t}" '{print $2 "\t" $1;}'
