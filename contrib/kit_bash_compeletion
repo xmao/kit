@@ -9,9 +9,9 @@ _kit()
 	done
 	
 	if [ -d ${updir}/${cur} ]; then
-		COMPREPLY=( $(compgen -W "$(ls $updir/$cur)" -- ${cur}) )
+		COMPREPLY=( $(compgen -W "$(ls $updir/$cur -- ${cur} | sed -e 's/\x1B\[([0-9]{1,2}(;[0-9]{1,2})?)?[m|K]//g')") )
 	elif [ -d $updir ]; then
-		COMPREPLY=( $(compgen -W "$(ls $updir)" -- ${cur}) )
+		COMPREPLY=( $(compgen -W "$(ls $updir)" -- ${cur} | sed -e 's/\x1B\[([0-9]{1,2}(;[0-9]{1,2})?)?[m|K]//g') )
 	else
 		COMPREPLY=()
 	fi
