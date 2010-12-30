@@ -5,7 +5,7 @@
 require 'bio/io/flatfile'
 require 'bio/db/kegg/orthology'
 
-kos = Bio::FlatFile.open(Bio::KEGG::ORTHOLOGY, "/Users/xmao/data/kegg/57/ko")
+kos = Bio::FlatFile.open(Bio::KEGG::ORTHOLOGY, ARGV[0])
 
 kos.each do |entry|
   entry.keggclasses.each do |path|
