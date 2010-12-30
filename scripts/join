@@ -1,0 +1,12 @@
+#!/usr/bin/env sh
+# Join the two files which are sorted in advance.
+
+file1=$(mktemp -t "join")
+file2=$(mktemp -t "join")
+
+sort -t "	" -k1,1 $1 > ${file1}
+sort -t "	" -k1,1 $2 > ${file2}
+
+join -t "	" -1 1 -2 1 ${file1} ${file2}
+
+rm ${file1} ${file2}
