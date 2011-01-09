@@ -42,23 +42,25 @@ if __name__ == '__main__':
     else:
         keys = [0]
 
+    meths = []
     if '-m' in dopts:
-        if dopts['-m'] == 'sum':
-            meth = lambda seq: '%d' % sum([ float(i) for i in seq ])
-        elif dopts['-m'] == 'ave':
-            meth = lambda seq: '%g' % (sum([ float(i) for i in seq ])/len(seq))
-        elif dopts['-m'] == 'cnt':
-            meth = lambda seq: '%i' % len(seq)
-        elif dopts['-m'].startswith('idx'):
-            if ':' in dopts['-m']:
-                idx = int(dopts['-m'].split(':')[1]) - 1
+        for o in dopts['-m'].split('::'):
+            if o == 'sum':
+                meths.append(lambda seq: '%d' % sum([ float(i) for i in seq ]))
+            elif o == 'ave':
+                meths.append(lambda seq: '%g' % (sum([ float(i) for i in seq ])/len(seq)))
+            elif o == 'cnt':
+                meths.append(lambda seq: '%i' % len(seq))
+            elif o.startswith('idx'):
+                if ':' in o:
+                    idx = int(o.split(':')[1]) - 1
+                else:
+                    idx = 0
+                meths.append(lambda seq: seq[idx])
             else:
-                idx = 0
-            meth = lambda seq: seq[idx]
-        else:
-            meth = ','.join
+                meths.append(','.join)
     else:
-        meth = ','.join
+        meths.append(','.join)
 
     for fields in nobbed([ l.rstrip().split('\t') for l in sys.stdin ], keys):
-        print '\t'.join([ type(i) in (list,set,tuple) and meth(i) or i for i in fields ])
+        print '\t'.join([ type(i) in (list,set,tuple) and '\t'.join([ m(i) for m in meths ]) or i for i in fields ])
