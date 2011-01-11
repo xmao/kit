@@ -3,7 +3,7 @@
 __doc__ = "Usage: query -d berkeley database -t hash|btree (-f keys)|key"
 
 if __name__ == '__main__':
-    import bsddb, os, sys, getopt
+    import bsddb, os, sys, getopt, cPickle
 
     try:
         opts, args = getopt.getopt(sys.argv[1:], 'd:t:f:')
@@ -16,19 +16,21 @@ if __name__ == '__main__':
         print __doc__
         sys.exit("Error: the %s database does not exist :-(" % dopts.get('-d', ''))
 
-    if dopts.get("-t", "hash") == "hash":
-        db = bsddb.hashopen(dopts.get('-d', 'data.db'))
-    else:
+    if dopts.get('-t', 'hash') == 'pickle':
+        db = cPickle.load(open(dopts.get('-d', 'data.db')))
+    elif dopts.get('-t', 'btree') == 'hash':
         db = bsddb.btopen(dopts.get('-d', 'data.db'))
+    else:
+        db = bsddb.hashopen(dopts.get('-d', 'data.db'))
 
     if '-f' in dopts:
         for i in open(dopts['-f']):
             if i in db:
-                print "%s: %s" % (i, db[i])
+                print '%s: %s' % (i, db[i])
             else:
-                print "%s does not exist" % (i, )        
-        else:
+                print '%s does not exist' % (i, )        
+    else:
         if args[0] in db:
-            print "%s: %s" % (args[0], db[args[0]])
+            print '%s: %s' % (args[0], db[args[0]])
         else:
-            print "%s does not exist" % (args[0], )        
+            print '%s does not exist' % (args[0], )        
