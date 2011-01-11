@@ -10,12 +10,15 @@ else:
         os.path.dirname(__file__), 'scripts')
 
 KIT_TYPES = {
-    'awk'    :  '#!/usr/bin/env awk',
-    'ruby'   :  '#!/usr/bin/env ruby',
-    'perl'   :  '#!/usr/bin/env perl',
-    'python' :  '#!/usr/bin/env python',
-    'sed'    :  '#!/usr/bin/env sed',
-    'shell'  :  '#!/usr/bin/env sh',
+    'awk'           :  '#!/usr/bin/env awk',
+     # Mathematica 8 is required
+    'mathematica'   :  '#!/usr/bin/env MathematicaScript -script',
+    'perl'          :  '#!/usr/bin/env perl',
+    'python'        :  '#!/usr/bin/env python',
+    'R'             :  '#!/usr/bin/env Rscript',
+    'ruby'          :  '#!/usr/bin/env ruby',
+    'sed'           :  '#!/usr/bin/env sed',
+    'shell'         :  '#!/usr/bin/env sh',
     }
 
 def kit_edit(names, args):
