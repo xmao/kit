@@ -15,4 +15,4 @@ if __name__ == '__main__':
     index = int(dopts.get('-f', '1'))
     
     for i in csv.reader(sys.stdin, dialect="excel-tab"):
-        print '\t'.join([ j == (index - 1) and tbl[i[j]] or i[j] for j in range(len(i)) ])
+        print '\t'.join([ (j == (index - 1) and i[j] in tbl ) and tbl[i[j]] or i[j] for j in range(len(i)) ])
