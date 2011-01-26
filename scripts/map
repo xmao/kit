@@ -4,15 +4,15 @@ if __name__ == '__main__':
     import csv,sys,getopt
 
     try:
-        opts, args = getopt.getopt(sys.argv[1:], 'f:t:')
+        opts, args = getopt.getopt(sys.argv[1:], 'k:t:')
     except:
         raise
     else:
         dopts = dict(opts)
     
-    tbl = dict([ i for i in csv.reader(open(dopts['-t']), dialect="excel-tab") ])
+    tbl = dict([ i for i in csv.reader(open(dopts['-t']), dialect="excel-tab") if len(i) == 2 ])
 
-    index = int(dopts.get('-f', '1'))
+    index = int(dopts.get('-k', '1'))
     
     for i in csv.reader(sys.stdin, dialect="excel-tab"):
         print '\t'.join([ (j == (index - 1) and i[j] in tbl ) and tbl[i[j]] or i[j] for j in range(len(i)) ])
