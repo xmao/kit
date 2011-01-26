@@ -1,0 +1,48 @@
+#!/usr/bin/env Rscript
+## GSER.R FILE METHOD OFFSET FDR
+
+methods <- list(
+  binom = function(x) {
+    t <- chisq.test(matrix(c(x[1], x[2]-x[1], x[3], x[4]-x[3]), nc=2))
+    t$p.value    
+  },
+  chisq = function(x) {
+    t <- binom.test((c(x[1], x[2]-x[1])), p=x[3]/x[4])
+    t$p.value
+  },
+  fisher = function(x) {
+    t <- fisher.test(matrix(c(x[1], x[2]-x[1], x[3], x[4]-x[3]), nc=2))
+    t$p.value
+  },
+  hyper = function(x) {
+    1 - phyper(x[1] - 1, x[3], x[4] - x[3], x[2])
+  }
+)
+
+opts <- list(file = 'stdin', method = 'hyper', offset = 1, qvalue = 'qvalue')
+
+args <- commandArgs(trailingOnly = TRUE)
+if (length(args) >= 1) opts$file <- args[1]
+if (length(args) >= 2) opts$method <- args[2]
+if (length(args) >= 3) opts$offset <- as.integer(args[3])
+if (length(args) >= 4) opts$fdr <- args[4]
+
+a <- read.delim(file(opts$file), header=F)
+
+## Statistic test for two samples
+a[['P_value']] <- apply(a[(c(3, 4 ,6, 7) + (opts$offset - 1))], 1,
+                        function(x) methods[[opts$method]](as.integer(unlist(x))))
+a <- a[order(a[['P_value']]), ]
+
+## Correction of false discovery rate
+options(error = expression(cat()))      # Ignore possible qvalue errors
+if (opts$fdr == 'qvalue') {
+  ## Available methods: smoother or bootstrap
+  suppressPackageStartupMessages(library(qvalue))
+  a[['Q_value']] <- qvalue(a[['P_value']], pi0.method='smooth')[['qvalues']]
+} else {
+  suppressPackageStartupMessages(library(multtest))
+  a <- data.frame(a, mt.rawp2adjp(a[['P_value']])$adjp[, -1])
+}
+
+write.table(a, sep='\t', quote=FALSE, row.names=FALSE)
