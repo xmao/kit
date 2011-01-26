@@ -1,0 +1,7 @@
+#!/usr/bin/env Rscript
+
+args <- commandArgs(trailingOnly = TRUE)
+
+a <- merge(read.csv(args[1]), read.csv(args[2]))
+
+write.csv(a, row.names=F)
