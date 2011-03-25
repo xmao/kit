@@ -2,7 +2,7 @@ KITHOME=$HOME/kit/scripts
 
 _kit()
 {
-	local cur updir=$KITHOME
+	local cur updir=$KITROOT
 	cur="${COMP_WORDS[COMP_CWORD]}"
 	for ((i=1; i<COMP_CWORD; i++)); do
 		updir=${updir}/${COMP_WORDS[i]}
