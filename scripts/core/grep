@@ -1,6 +1,6 @@
 #!/usr/bin/env sh
 
-temp=$(mktemp)
+temp=$(mktemp -t git)
 cat > $temp
 grep -f $temp $*
 rm $temp
