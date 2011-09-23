@@ -57,10 +57,20 @@ if __name__ == '__main__':
                 else:
                     idx = 0
                 meths.append(lambda seq: seq[idx])
+            elif o == 'max':
+                meths.append(lambda seq: '%g' % (max([ float(i) for i in seq ])))
+            elif o == 'min':
+                meths.append(lambda seq: '%g' % (min([ float(i) for i in seq ])))
             else:
                 meths.append(','.join)
     else:
         meths.append(','.join)
 
-    for fields in nobbed([ l.rstrip().split('\t') for l in sys.stdin ], keys):
-        print '\t'.join([ type(i) in (list,set,tuple) and '\t'.join([ m(i) for m in meths ]) or i for i in fields ])
+    for fields in nobbed([ l.rstrip("\r\n").split('\t') for l in sys.stdin ], keys):
+        row = []
+        for i in fields:
+           if type(i) in (list,set,tuple):
+               row.append(';'.join([ m([ j for j in i if j ]) for m in meths ]))
+           else:
+               row.append(i)
+        print '\t'.join(row)
