@@ -2,13 +2,29 @@
 # Get intersection for arbitary intersection
 
 if __name__ == '__main__':
-    import sys
+    import sys, getopt
+    try:
+        opts, args = getopt.getopt(sys.argv[1:], 's:')
+    except:
+        raise
+    else:
+        dopts = dict(opts)
+
+    skip = int(dopts.get('-s', '0'))
 
     sets, keys = [], set()
-    for i in sys.argv[1:]:
-        s = set([ j.strip() for j in open(i) ])
+    for i in args:
+        f = open(i)
+        if skip:
+           for j in range(skip):
+               f.next()
+        s = set([ j.strip() for j in f ])
         keys.update(s)
         sets.append(s)
+
+    print "# 1 means being in this file, and 0 means not."
+    print "# The last column is the sum of all in status."
+    print "# Key\t%s\tAll" % '\t'.join(args)
     
     for i in keys:
         ss = [ i in s and 1 or 0 for s in sets ]
