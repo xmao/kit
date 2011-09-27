@@ -1,0 +1,10 @@
+#!/usr/bin/env ruby
+
+require 'bio/io/flatfile'
+require 'bio/db/kegg/enzyme'
+
+enzymes = Bio::FlatFile.open(Bio::KEGG::ENZYME, ARGV[0])
+
+enzymes.each do |e|
+  puts "#{e.entry_id}\t#{e.iubmb_reactions} #{e.kegg_reactions}"
+end

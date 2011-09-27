@@ -1,0 +1,10 @@
+#!/usr/bin/env ruby
+
+require 'bio/io/flatfile'
+require 'bio/db/kegg/reaction'
+
+reactions = Bio::FlatFile.open(Bio::KEGG::REACTION, ARGV[0])
+
+reactions.each do |r|
+  puts "#{r.entry_id}\t#{r.comment}\t#{r.name}\t#{r.definition}\t#{r.equation}"
+end

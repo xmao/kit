@@ -1,0 +1,14 @@
+#!/usr/bin/env ruby
+
+require 'bio/io/flatfile'
+require 'bio/db/kegg/enzyme'
+
+Bio::FlatFile.open(Bio::KEGG::ENZYME, ARGV[0]).each { |e|
+  if e.genes.length > 0
+    if e.genes.has_key?(ARGV[1])
+      puts "#{ e.entry_id }\t#{ e.pathways.keys.join ',' }\t#{ e.genes[ARGV[1]].join ',' }"
+    end
+  end
+}
+
+
