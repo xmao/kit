@@ -1,0 +1,13 @@
+#!/usr/bin/env sh
+
+for i in $(find ${1:-.} -maxdepth 1 -mindepth 1 -type d); do
+	orgname=$(basename $i)
+	if ls $i/*.ptt 1>/dev/null 2>&1; then
+		for j in $i/*.ptt; do 
+			if head -n 1 $j | grep "genome" 1>/dev/null; then
+				chrname=$(basename $j | sed -e "s/\.ptt//")
+				echo -e "${orgname}\t${chrname}"
+			fi; 
+		done
+	fi
+done
