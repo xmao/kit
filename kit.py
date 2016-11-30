@@ -13,7 +13,6 @@ else:
 
 KIT_TYPES = {
     'awk':  '#!/usr/bin/env awk',
-    # Mathematica 8 is required
     'mathematica':  '#!/usr/bin/env MathematicaScript -script',
     'perl':  '#!/usr/bin/env perl',
     'python':  '#!/usr/bin/env python',
@@ -22,6 +21,12 @@ KIT_TYPES = {
     'sed':  '#!/usr/bin/env sed',
     'shell':  '#!/usr/bin/env sh',
 }
+
+
+def kit_cat(names, args):
+    p = get_program(names)
+    if os.path.isfile(p):
+        os.system("cat %s" % p)
 
 
 def kit_edit(names, args):
@@ -56,6 +61,29 @@ def kit_create(names, args):
             f.close()
     kit_edit(names, args)
 
+def kit_run(names, args):
+        try:
+            p = subprocess.Popen([get_program(names)] + args)
+            retcode = p.wait()
+        except KeyboardInterrupt, e:
+            p.kill()
+            sys.exit(1)
+        except:
+            raise
+        else:
+            sys.exit(retcode)
+
+def kit_help(names, args):
+    for l in file(get_program(names)):
+        l = l.strip()
+        if l.startswith('#'):
+            if l == '#' or l.startswith('#!'):
+                continue
+            else:
+                print l[1:].strip()
+        else:
+            break
+
 
 def get_program(names):
     return os.path.join(KITROOT, *names)
@@ -68,7 +96,6 @@ def get_names_and_args(args):
     return args, []
 
 if __name__ == '__main__':
-    import os
     import sys
 
     names, args = get_names_and_args(sys.argv[1:])
@@ -77,15 +104,9 @@ if __name__ == '__main__':
         [(k[4:], v) for k, v in vars().items() if k.startswith('kit_')])
 
     if '-h' in args:
-        for l in file(get_program(names)):
-            l = l.strip()
-            if l.startswith('#'):
-                if l == '#' or l.startswith('#!'):
-                    continue
-                else:
-                    print l[1:].strip()
-            else:
-                break
+        KIT_METHODS['help'](names)
+    elif names[0] in KIT_METHODS:
+        KIT_METHODS[names[0]](names[1:], args)
     elif not os.path.isfile(get_program(names)):
         if '-t' not in args:
             print "Supported script types are as follows:"
@@ -95,16 +116,5 @@ if __name__ == '__main__':
             idx = input('What type you will create (input index):')
             args.extend(['-t', types[idx]])
         kit_create(names, args)
-    elif names[0] in KIT_METHODS:
-        KIT_METHODS[names[0]](names[1:], args)
     else:
-        try:
-            p = subprocess.Popen([get_program(names)] + args)
-            retcode = p.wait()
-        except KeyboardInterrupt, e:
-            p.kill()
-            exit(1)
-        except:
-            raise
-        else:
-            exit(retcode)
+        KIT_METHODS['run'](names, args)

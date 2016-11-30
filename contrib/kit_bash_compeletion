@@ -1,20 +1,34 @@
-KITHOME=$HOME/kit/scripts
-
 _kit()
 {
-	local cur updir=$KITROOT
-	cur="${COMP_WORDS[COMP_CWORD]}"
-	for ((i=1; i<COMP_CWORD; i++)); do
-		updir=${updir}/${COMP_WORDS[i]}
-	done
-	
-	if [ -d ${updir}/${cur} ]; then
-		COMPREPLY=( $(compgen -W "$(ls $updir/$cur -- ${cur} | sed -e 's/\x1B\[([0-9]{1,2}(;[0-9]{1,2})?)?[m|K]//g')") )
-	elif [ -d $updir ]; then
-		COMPREPLY=( $(compgen -W "$(ls $updir)" -- ${cur} | sed -e 's/\x1B\[([0-9]{1,2}(;[0-9]{1,2})?)?[m|K]//g') )
-	else
-		COMPREPLY=()
-	fi
-	return 0
+    local cur prev updir
+    COMPREPLY=()
+    
+    # Skipp builtin commands
+    if echo ${COMP_WORDS[1]} | grep -e 'cat\|edit\|help' 1>/dev/null; then
+        start=2
+    else
+        start=1
+    fi
+
+    cur="${COMP_WORDS[COMP_CWORD]}"
+    prev="${COMP_WORDS[COMP_CWORD-1]}"
+ 
+    updir=$KITROOT
+    for ((i=$start; i<COMP_CWORD; i++)); do
+         updir=${updir}/${COMP_WORDS[i]}
+    done
+    
+    if [ -d ${updir}/${cur} ]; then
+        if [ "${COMP_LINE: -1}" == " " ]; then 
+            COMPREPLY=( $(compgen -W "$(ls $updir/$cur)") )
+        else
+    	    COMPREPLY=( '' )
+        fi
+    elif [ -d $updir ]; then
+    	COMPREPLY=( $(compgen -W "$(ls $updir)" -- ${cur}) )
+    else
+    	_filedir
+    fi
+    return 0
 }
 complete -F _kit kit
