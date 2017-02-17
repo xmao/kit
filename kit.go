@@ -38,7 +38,31 @@ func main() {
 }
 
 func CmdAdd(opts ...string) {
+	KIT_TYPES := map[string]string{
+		"awk":         "#!/usr/bin/env awk",
+		"mathematica": "#!/usr/bin/env MathematicaScript -script",
+		"perl":        "#!/usr/bin/env perl",
+		"python":      "#!/usr/bin/env python",
+		"R":           "#!/usr/bin/env Rscript",
+		"ruby":        "#!/usr/bin/env ruby",
+		"sed":         "#!/usr/bin/env sed",
+		"shell":       "#!/usr/bin/env sh",
+	}
 
+	cmdStrs, _ := GetCmdAndArgs(opts)
+
+	cmdDirPath := GetCmdPath(cmdStrs[:len(cmdStrs)-1])
+	if os.MkdirAll(cmdDirPath, 0777) != nil {
+		log.Fatal(fmt.Sprintf("Can't create directory %s", cmdDirPath))
+	}
+
+	cmdPath := GetCmdPath(cmdStrs)
+	f, _ := os.Create(cmdPath)
+	f.WriteString(fmt.Sprintf("%s\\n", KIT_TYPES["python"]))
+	f.Sync()
+	f.Close()
+
+	CmdEdit(opts...)
 }
 
 func CmdCat(opts ...string) {
@@ -63,8 +87,7 @@ func CmdRun(opts ...string) {
 	cmd.Stdout = os.Stdout
 
 	if err := cmd.Run(); err != nil {
-		fmt.Printf("\n-----------------------------------------------------------------\n")
-		panic(fmt.Sprintf("Run error: %s", cmdPath))
+		panic(fmt.Sprintf("\n\nRun error: %s", cmdPath))
 	}
 }
 

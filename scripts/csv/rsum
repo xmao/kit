@@ -1,0 +1,5 @@
+#!/usr/bin/env Rscript
+
+D <- read.delim(file('stdin'))
+X <- apply(D, 1, function(x) { sum(x) })
+write.table(cbind(D, Sum=X), sep="\t", quote=F, row.names=F)
