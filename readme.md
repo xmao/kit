@@ -16,4 +16,5 @@ kit cat csv idx
 All the scripts are organized in the *scripts* directory, and you can check out all the small tools or add your own. 
 
 # Completion for Bash
- Supported by contrib/kit_bash_completion
+
+The kit_bash_completion under contrib directory adds completion support for bash.
