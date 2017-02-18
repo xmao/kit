@@ -2,7 +2,7 @@
 * Usage
 kit is yet another keyword-based manager for small command line tools under unix-like operating system. 
 
-Let's demonstrate the usage of kit using scripts/csv/idx that is a bash script to show column number along with each column.
+For instance, *idx* is a bash script under *csv* directory to add number index for each column in csv file.
 
 - Run command where run is optional
 kit [run] csv idx
