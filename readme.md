@@ -17,4 +17,4 @@ All the scripts are organized in the *scripts* directory, and you can check out 
 
 # Completion for Bash
 
-The kit_bash_completion under contrib directory adds completion support for bash.
+The kit_bash_completion under *contrib* directory adds completion support for bash.
