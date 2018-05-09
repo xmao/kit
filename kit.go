@@ -28,6 +28,8 @@ func main() {
 		CmdEdit(os.Args[2:]...)
 	case "run":
 		CmdRun(os.Args[2:]...)
+	case "path":
+		CmdPath(os.Args[2:]...)
 	default:
 		if _, err := os.Stat(GetCmdPath(os.Args[1:2])); err == nil {
 			CmdRun(os.Args[1:]...)
@@ -82,7 +84,10 @@ func CmdEdit(opts ...string) {
 	defer os.Remove(tmpfile.Name())
 
 	if ioutil.WriteFile(tmpfile.Name(), content, 0755) == nil {
-		cmd := exec.Command("vim", tmpfile.Name())
+		editor, args := GetEditor()
+		args = append(args, tmpfile.Name())
+
+		cmd := exec.Command(editor, args...)
 		cmd.Stdin = os.Stdin
 		cmd.Stderr = os.Stderr
 		cmd.Stdout = os.Stdout
@@ -96,6 +101,12 @@ func CmdEdit(opts ...string) {
 			log.Fatal(err)
 		}
 	}
+}
+
+func CmdPath(opts ...string) {
+	cmdstrs, _ := GetCmdAndArgs(opts)
+	fmt.Printf("%s\n", GetCmdPath(cmdstrs))
+	os.Exit(0)
 }
 
 func CmdHelp(opts ...string) {
@@ -149,5 +160,16 @@ func GetCmdRootPath() string {
 		return path.Join(usr.HomeDir, ".kit", "scripts")
 	} else {
 		return root
+	}
+}
+
+func GetEditor() (string, []string) {
+	editor, ok := os.LookupEnv("EDITOR")
+
+	if ok {
+		editor_opts := strings.Split(editor, " ")
+		return editor_opts[0], editor_opts[1:]
+	} else {
+		return "vim", []string{}
 	}
 }
