@@ -101,8 +101,7 @@ func CmdRun(opts ...string) {
 	cmd.Stdout = os.Stdout
 
 	if err := cmd.Run(); err != nil {
-		fmt.Printf("\n-----------------------------------------------------------------\n")
-		panic(fmt.Sprintf("Run error: %s", cmdPath))
+		panic(fmt.Sprintf("\n\nRun error: %s", cmdPath))
 	}
 }
 
