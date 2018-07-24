@@ -1,0 +1,6 @@
+#!/usr/bin/env Rscript
+
+# D <- read.csv("stdin", row.names=NULL)
+D <- read.table("stdin", row.names=NULL, header=T)
+
+write.table(t(D), sep="\t", col.names=F)

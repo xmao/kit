@@ -1,0 +1,4 @@
+#!/usr/bin/env Rscript
+
+D <- read.delim(file('stdin'))
+print(colSums(D))
