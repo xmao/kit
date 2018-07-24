@@ -12,6 +12,17 @@ import (
 	"strings"
 )
 
+var KIT_TYPES = map[string]string{
+	"awk":         "#!/usr/bin/env awk",
+	"mathematica": "#!/usr/bin/env MathematicaScript -script",
+	"perl":        "#!/usr/bin/env perl",
+	"python":      "#!/usr/bin/env python",
+	"R":           "#!/usr/bin/env Rscript",
+	"ruby":        "#!/usr/bin/env ruby",
+	"sed":         "#!/usr/bin/env sed",
+	"shell":       "#!/usr/bin/env sh",
+}
+
 func main() {
 	if len(os.Args) <= 1 {
 		Usage()
@@ -40,7 +51,30 @@ func main() {
 }
 
 func CmdAdd(opts ...string) {
+	cmdStrs, _ := GetCmdAndArgs(opts)
+	cmdDir := GetCmdPath(cmdStrs[:(len(cmdStrs) - 1)])
+	cmdPath := GetCmdPath(cmdStrs)
 
+	if _, err := os.Stat(cmdDir); os.IsNotExist(err) {
+		os.MkdirAll(GetCmdPath(cmdStrs[:(len(cmdStrs)-1)]), 0755)
+	}
+
+	if _, err := os.Stat(cmdPath); os.IsNotExist(err) {
+		fmt.Printf("%s does not exist!\n Will create one:\n", cmdPath)
+		for k, v := range KIT_TYPES {
+			fmt.Printf("  %s: %s\n", k, v)
+		}
+		fmt.Print("Type of script you will create: ")
+
+		reader := bufio.NewReader(os.Stdin)
+		answer, _ := reader.ReadString('\n')
+
+		ioutil.WriteFile(cmdPath, []byte(KIT_TYPES[strings.Trim(answer, "\n")]+"\n"), 0755)
+
+		CmdEdit(opts...)
+	} else {
+		log.Fatal("Command file already exists!")
+	}
 }
 
 func CmdCat(opts ...string) {
