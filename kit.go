@@ -35,6 +35,8 @@ func main() {
 		CmdCat(os.Args[2:]...)
 	case "add":
 		CmdAdd(os.Args[2:]...)
+	case "delete":
+		CmdDelete(os.Args[2:]...)
 	case "edit":
 		CmdEdit(os.Args[2:]...)
 	case "run":
@@ -60,14 +62,14 @@ func CmdAdd(opts ...string) {
 	}
 
 	if _, err := os.Stat(cmdPath); os.IsNotExist(err) {
-		fmt.Printf("%s does not exist!\n Will create one:\n", cmdPath)
+		fmt.Printf("Command not exist at %s\nPlease select one type to create:\n", cmdPath)
+		i := 0
 		for k, v := range KIT_TYPES {
-			fmt.Printf("  %s: %s\n", k, v)
+			i++
+			fmt.Printf("%d: %s (%s)\n", i, k, v)
 		}
-		fmt.Print("Type of script you will create: ")
 
-		reader := bufio.NewReader(os.Stdin)
-		answer, _ := reader.ReadString('\n')
+		answer := GetInput("Type of script you will create: ")
 
 		ioutil.WriteFile(cmdPath, []byte(KIT_TYPES[strings.Trim(answer, "\n")]+"\n"), 0755)
 
@@ -102,6 +104,16 @@ func CmdRun(opts ...string) {
 		fmt.Printf("\n-----------------------------------------------------------------\n")
 		panic(fmt.Sprintf("Run error: %s", cmdPath))
 	}
+}
+
+func CmdDelete(opts ...string) {
+	cmdStrs, _ := GetCmdAndArgs(opts)
+	cmdPath := GetCmdPath(cmdStrs)
+
+	if err := os.Remove(cmdPath); err == nil {
+		fmt.Println("Command deleted!")
+	}
+
 }
 
 func CmdEdit(opts ...string) {
@@ -167,7 +179,7 @@ func CmdHelp(opts ...string) {
 
 func Usage() {
 	fmt.Printf(
-		"Usage: %s [run|cat|add|edit|help] Command\n",
+		"Usage: %s [run|cat|add|delete|edit|help] Command\n",
 		path.Base(os.Args[0]))
 	os.Exit(1)
 }
@@ -206,4 +218,10 @@ func GetEditor() (string, []string) {
 	} else {
 		return "vim", []string{}
 	}
+}
+
+func GetInput(prompt string) string {
+	fmt.Print(prompt)
+	answer, _ := bufio.NewReader(os.Stdin).ReadString('\n')
+	return answer
 }
