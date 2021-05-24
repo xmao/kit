@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+
+blastn -query <(seqtk seq -a < $1) -subject <(seqtk seq -a < $2)
+
